@@ -42,7 +42,7 @@ ASP.NET Core MVC includes the following:
 * Strongly typed views
     * Razor views in MVC can be strongly typed based on your model. Controllers can pass a strongly typed model to views enabling your views to have type checking and IntelliSense support.
 * Tag Helpers
-    * Enable server side code to participate in creating and rendering HTML elements in Razor files. You can use tag helpers to define custom tags (for example, < environment>) or to modify the behavior of existing tags (for example, < label>). Tag Helpers bind to specific elements based on the element name and its attributes. They provide the benefits of server-side rendering while still preserving an HTML editing experience.
+    * Enable server side code to participate in creating and rendering HTML elements in Razor files. You can use tag helpers to define custom tags (for example, `<environment>`) or to modify the behavior of existing tags (for example, `<label>`). Tag Helpers bind to specific elements based on the element name and its attributes. They provide the benefits of server-side rendering while still preserving an HTML editing experience.
 * View Components
     * View Components allow you to package rendering logic and reuse it throughout the application. They're similar to partial views, but with associated logic.
 

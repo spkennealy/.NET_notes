@@ -78,3 +78,78 @@ Without the explicit expression, <p>Age@joe.Age</p> is treated as an email addre
 
 ## **Expression encoding**
 
+C# expressions that evaluate to a string are HTML encoded. C# expressions that evaluate to IHtmlContent are rendered directly through IHtmlContent.WriteTo. C# expressions that don't evaluate to IHtmlContent are converted to a string by ToString and encoded before they're rendered.
+
+HtmlHelper.Raw output isn't encoded but rendered as HTML markup.
+* Using HtmlHelper.Raw on unsanitized user input is a security risk. User input might contain malicious JavaScript or other exploits. Sanitizing user input is difficult. Avoid using HtmlHelper.Raw with user input.
+
+## **Razor code blocks**
+
+Razor code blocks start with @ and are enclosed by {}. Unlike expressions, C# code inside code blocks isn't rendered. Code blocks and expressions in a view share the same scope and are defined in order:
+```html
+<!-- .cshtml file --> 
+@{
+    var quote = "The future depends on what you do today. - Mahatma Gandhi";
+}
+
+<p>@quote</p>
+
+@{
+    quote = "Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.";
+}
+
+<p>@quote</p>
+```
+
+The code renders the following HTML:
+```html
+<p>The future depends on what you do today. - Mahatma Gandhi</p>
+<p>Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.</p>
+```
+
+### **Implicit transitions**
+
+The default language in a code block is C#, but the Razor Page can transition back to HTML:
+```html
+<!-- .cshtml file --> 
+@{
+    var inCSharp = true;
+    <p>Now in HTML, was in C# @inCSharp</p>
+}
+```
+
+### **Explicit delimited transition**
+
+To define a subsection of a code block that should render HTML, surround the characters for rendering with the Razor `<text>` tag:
+```html
+<!-- .cshtml file --> 
+@for (var i = 0; i < people.Length; i++)
+{
+    var person = people[i];
+    <text>Name: @person.Name</text>
+}
+```
+
+Use this approach to render HTML that isn't surrounded by an HTML tag. Without an HTML or Razor tag, a Razor runtime error occurs.
+
+The `<text>` tag is useful to control whitespace when rendering content:
+
+Only the content between the `<text>` tag is rendered.
+No whitespace before or after the `<text>` tag appears in the HTML output.
+
+### **Explicit Line Transition with @:**
+
+To render the rest of an entire line as HTML inside a code block, use the @: syntax:
+```html
+<!-- .cshtml file --> 
+@for (var i = 0; i < people.Length; i++)
+{
+    var person = people[i];
+    @:Name: @person.Name
+}
+```
+
+Without the @: in the code, a Razor runtime error is generated.
+
+Warning: Extra @ characters in a Razor file can cause compiler errors at statements later in the block. These compiler errors can be difficult to understand because the actual error occurs before the reported error. This error is common after combining multiple implicit/explicit expressions into a single code block.
+
