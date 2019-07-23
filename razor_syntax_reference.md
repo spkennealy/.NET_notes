@@ -56,3 +56,25 @@ Generic method calls must be wrapped in an explicit Razor expression or a Razor 
 
 ## **Explicit Razor expressions**
 
+Explicit Razor expressions consist of an @ symbol with balanced parenthesis. To render last week's time, the following Razor markup is used:
+```html
+<!-- .cshtml file --> 
+<p>Last week this time: @(DateTime.Now - TimeSpan.FromDays(7))</p>
+```
+
+Any content within the `@()` parenthesis is evaluated and rendered to the output. Implicit expressions, described in the previous section, generally can't contain spaces.
+
+Explicit expressions can be used to concatenate text with an expression result:
+```html
+<!-- .cshtml file --> 
+@{
+    var joe = new Person("Joe", 33);
+}
+
+<p>Age@(joe.Age)</p>
+```
+
+Without the explicit expression, <p>Age@joe.Age</p> is treated as an email address, and <p>Age@joe.Age</p> is rendered. When written as an explicit expression, <p>Age33</p> is rendered.
+
+## **Expression encoding**
+
