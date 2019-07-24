@@ -153,3 +153,52 @@ Without the @: in the code, a Razor runtime error is generated.
 
 Warning: Extra @ characters in a Razor file can cause compiler errors at statements later in the block. These compiler errors can be difficult to understand because the actual error occurs before the reported error. This error is common after combining multiple implicit/explicit expressions into a single code block.
 
+## **Control structures**
+
+Control structures are an extension of code blocks. All aspects of code blocks (transitioning to markup, inline C#) also apply to the following structures:
+
+### **Conditionals @if, else if, else, and @switch**
+
+`@if` controls when code runs:
+```html
+<!-- .cshtml file --> 
+@if (value % 2 == 0)
+{
+    <p>The value was even.</p>
+}
+```
+
+else and else if don't require the @ symbol:
+```html
+<!-- .cshtml file --> 
+@if (value % 2 == 0)
+{
+    <p>The value was even.</p>
+}
+else if (value >= 1337)
+{
+    <p>The value is large.</p>
+}
+else
+{
+    <p>The value is odd and small.</p>
+}
+```
+
+The following markup shows how to use a switch statement:
+```html
+<!-- .cshtml file --> 
+@switch (value)
+{
+    case 1:
+        <p>The value is 1!</p>
+        break;
+    case 1337:
+        <p>Your number is 1337!</p>
+        break;
+    default:
+        <p>Your number wasn't 1 or 1337.</p>
+        break;
+}
+```
+
