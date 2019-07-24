@@ -202,3 +202,81 @@ The following markup shows how to use a switch statement:
 }
 ```
 
+### **Looping @for, @foreach, @while, and @do while**
+
+Templated HTML can be rendered with looping control statements. To render a list of people:
+```html
+<!-- .cshtml file --> 
+@{
+    var people = new Person[]
+    {
+          new Person("Weston", 33),
+          new Person("Johnathon", 41),
+          ...
+    };
+}
+```
+
+The following looping statements are supported: `@for`, `@foreach`, `@while`, `@do while`
+
+### **Compound @using**
+
+In C#, a using statement is used to ensure an object is disposed. In Razor, the same mechanism is used to create HTML Helpers that contain additional content. In the following code, HTML Helpers render a form tag with the @using statement:
+```html
+<!-- .cshtml file --> 
+@using (Html.BeginForm())
+{
+    <div>
+        email:
+        <input type="email" id="Email" value="">
+        <button>Register</button>
+    </div>
+}
+```
+
+### **@try, catch, finally**
+
+Exception handling is similar to C#:
+```html
+<!-- .cshtml file --> 
+@try
+{
+    throw new InvalidOperationException("You did something invalid.");
+}
+catch (Exception ex)
+{
+    <p>The exception message: @ex.Message</p>
+}
+finally
+{
+    <p>The finally statement.</p>
+}
+```
+
+### **@lock**
+
+Razor has the capability to protect critical sections with lock statements:
+```html
+<!-- .cshtml file --> 
+@lock (SomeLock)
+{
+    // Do critical section work
+}
+```
+
+### **Comments**
+
+Razor supports C# and HTML comments:
+```html
+<!-- .cshtml file --> 
+@{
+    /* C# comment */
+    // Another C# comment
+}
+<!-- HTML comment -->
+```
+
+Razor comments are removed by the server before the webpage is rendered. Razor uses @* *@ to delimit comments. 
+
+## **Directives**
+
