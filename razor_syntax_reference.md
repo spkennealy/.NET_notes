@@ -280,3 +280,29 @@ Razor comments are removed by the server before the webpage is rendered. Razor u
 
 ## **Directives**
 
+Razor directives are represented by implicit expressions with reserved keywords following the @ symbol. A directive typically changes the way a view is parsed or enables different functionality.
+
+Understanding how Razor generates code for a view makes it easier to understand how directives work.
+```html
+<!-- .cshtml file --> 
+@{
+    var quote = "Getting old ain't for wimps! - Anonymous";
+}
+
+<div>Quote of the Day: @quote</div>
+```
+
+The code generates a class similar to the following:
+```csharp
+public class _Views_Something_cshtml : RazorPage<dynamic>
+{
+    public override async Task ExecuteAsync()
+    {
+        var output = "Getting old ain't for wimps! - Anonymous";
+
+        WriteLiteral("/r/n<div>Quote of the Day: ");
+        Write(output);
+        WriteLiteral("</div>");
+    }
+}
+```
