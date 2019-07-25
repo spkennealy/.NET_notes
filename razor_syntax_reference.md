@@ -2,6 +2,7 @@
 
 Razor is a markup syntax for embedding server-based code into webpages. The Razor syntax consists of Razor markup, C#, and HTML. Files containing Razor generally have a .cshtml file extension.
 
+
 ## **Razor syntax**
 Razor supports C# and uses the @ symbol to transition from HTML to C#. Razor evaluates C# expressions and renders them in the HTML output.
 
@@ -24,6 +25,7 @@ HTML attributes and content containing email addresses don't treat the @ symbol 
 <!-- .cshtml file --> 
 <a href="mailto:Support@contoso.com">Support@contoso.com</a>
 ```
+
 
 ## **Implicit Razor expressions**
 
@@ -54,6 +56,7 @@ The preceding code generates a compiler error similar to one of the following:
 
 Generic method calls must be wrapped in an explicit Razor expression or a Razor code block.
 
+
 ## **Explicit Razor expressions**
 
 Explicit Razor expressions consist of an @ symbol with balanced parenthesis. To render last week's time, the following Razor markup is used:
@@ -76,12 +79,14 @@ Explicit expressions can be used to concatenate text with an expression result:
 
 Without the explicit expression, <p>Age@joe.Age</p> is treated as an email address, and <p>Age@joe.Age</p> is rendered. When written as an explicit expression, <p>Age33</p> is rendered.
 
+
 ## **Expression encoding**
 
 C# expressions that evaluate to a string are HTML encoded. C# expressions that evaluate to IHtmlContent are rendered directly through IHtmlContent.WriteTo. C# expressions that don't evaluate to IHtmlContent are converted to a string by ToString and encoded before they're rendered.
 
 HtmlHelper.Raw output isn't encoded but rendered as HTML markup.
 * Using HtmlHelper.Raw on unsanitized user input is a security risk. User input might contain malicious JavaScript or other exploits. Sanitizing user input is difficult. Avoid using HtmlHelper.Raw with user input.
+
 
 ## **Razor code blocks**
 
@@ -152,6 +157,7 @@ To render the rest of an entire line as HTML inside a code block, use the @: syn
 Without the @: in the code, a Razor runtime error is generated.
 
 Warning: Extra @ characters in a Razor file can cause compiler errors at statements later in the block. These compiler errors can be difficult to understand because the actual error occurs before the reported error. This error is common after combining multiple implicit/explicit expressions into a single code block.
+
 
 ## **Control structures**
 
@@ -277,6 +283,7 @@ Razor supports C# and HTML comments:
 ```
 
 Razor comments are removed by the server before the webpage is rendered. Razor uses @* *@ to delimit comments. 
+
 
 ## **Directives**
 
@@ -443,4 +450,100 @@ The @namespace directive sets the namespace of the class of the generated page o
 ### **@section**
 
 The @section directive is used in conjunction with the layout to enable pages or views to render content in different parts of the HTML page. 
+
+
+## **Templated Razor delegates**
+
+Razor templates allow you to define a UI snippet with the following format:
+```html
+<!-- .cshtml file --> 
+@<tag>...</tag>
+```
+
+The following example illustrates how to specify a templated Razor delegate as a `Func<T,TResult>`. The `dynamic` type is specified for the parameter of the method that the delegate encapsulates. An `object` type is specified as the return value of the delegate. The template is used with a `List<T>` of Pet that has a Name property.
+```csharp
+public class Pet
+{
+    public string Name { get; set; }
+}
+```
+```html
+<!-- .cshtml file --> 
+@{
+    Func<dynamic, object> petTemplate = @<p>You have a pet named <strong>@item.Name</strong>.</p>;
+
+    var pets = new List<Pet>
+    {
+        new Pet { Name = "Rin Tin Tin" },
+        new Pet { Name = "Mr. Bigglesworth" },
+        new Pet { Name = "K-9" }
+    };
+}
+```
+
+The template is rendered with pets supplied by a foreach statement:
+```html
+<!-- .cshtml file --> 
+@foreach (var pet in pets)
+{
+    @petTemplate(pet)
+}
+```
+
+Rendered output:
+```html
+<p>You have a pet named <strong>Rin Tin Tin</strong>.</p>
+<p>You have a pet named <strong>Mr. Bigglesworth</strong>.</p>
+<p>You have a pet named <strong>K-9</strong>.</p>
+```
+
+You can also supply an inline Razor template as an argument to a method. In the following example, the Repeat method receives a Razor template. The method uses the template to produce HTML content with repeats of items supplied from a list:
+```html
+<!-- .cshtml file --> 
+@using Microsoft.AspNetCore.Html
+
+@functions {
+    public static IHtmlContent Repeat(IEnumerable<dynamic> items, int times,
+        Func<dynamic, IHtmlContent> template)
+    {
+        var html = new HtmlContentBuilder();
+
+        foreach (var item in items)
+        {
+            for (var i = 0; i < times; i++)
+            {
+                html.AppendHtml(template(item));
+            }
+        }
+
+        return html;
+    }
+}
+```
+
+Using the list of pets from the prior example, the Repeat method is called with:
+* `List<T>` of Pet.
+* Number of times to repeat each pet.
+* Inline template to use for the list items of an unordered list.
+```html
+<!-- .cshtml file --> 
+<ul>
+    @Repeat(pets, 3, @<li>@item.Name</li>)
+</ul>
+```
+
+Rendered output:
+```html
+<ul>
+    <li>Rin Tin Tin</li>
+    <li>Rin Tin Tin</li>
+    <li>Rin Tin Tin</li>
+    <li>Mr. Bigglesworth</li>
+    <li>Mr. Bigglesworth</li>
+    <li>Mr. Bigglesworth</li>
+    <li>K-9</li>
+    <li>K-9</li>
+    <li>K-9</li>
+</ul>
+```
 
