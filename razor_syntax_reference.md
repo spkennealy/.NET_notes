@@ -592,3 +592,54 @@ C# Razor keywords must be double-escaped with @(@C# Razor Keyword) (for example,
 ### **Reserved keywords not used by Razor**
 * class
 
+
+## **Inspect the Razor C# class generated for a view**
+
+With .NET Core SDK 2.1 or later, the Razor SDK handles compilation of Razor files. When building a project, the Razor SDK generates an `obj/<build_configuration>/<target_framework_moniker>/Razor` directory in the project root. The directory structure within the Razor directory mirrors the project's directory structure.
+
+Consider the following directory structure in an ASP.NET Core 2.1 Razor Pages project targeting .NET Core 2.1:
+* Areas/
+    * Admin/
+        * Pages/
+            * Index.cshtml
+            * Index.cshtml.cs
+* Pages/
+    * Shared/
+        * _Layout.cshtml
+    * _ViewImports.cshtml
+    * _ViewStart.cshtml
+    * Index.cshtml
+    * Index.cshtml.cs
+
+Building the project in Debug configuration yields the following obj directory:
+* obj/
+    * Debug/
+        * netcoreapp2.1/
+            * Razor/
+                * Areas/
+                    * Admin/
+                        * Pages/
+                            * Index.g.cshtml.cs
+                * Pages/
+                    * Shared/
+                        * _Layout.g.cshtml.cs
+                    * _ViewImports.g.cshtml.cs
+                    * _ViewStart.g.cshtml.cs
+                    * Index.g.cshtml.cs
+
+To view the generated class for Pages/Index.cshtml, open obj/Debug/netcoreapp2.1/Razor/Pages/Index.g.cshtml.cs.
+
+
+## **View lookups and case sensitivity**
+
+The Razor view engine performs case-sensitive lookups for views. However, the actual lookup is determined by the underlying file system:
+* File based source:
+    * On operating systems with case insensitive file systems (for example, Windows), physical file provider lookups are case insensitive. For example, return View("Test") results in matches for /Views/Home/Test.cshtml, /Views/home/test.cshtml, and any other casing variant.
+    * On case-sensitive file systems (for example, Linux, OSX, and with EmbeddedFileProvider), lookups are case-sensitive. For example, return View("Test") specifically matches /Views/Home/Test.cshtml.
+* Precompiled views: With ASP.NET Core 2.0 and later, looking up precompiled views is case insensitive on all operating systems. The behavior is identical to physical file provider's behavior on Windows. If two precompiled views differ only in case, the result of lookup is non-deterministic.
+
+Developers are encouraged to match the casing of file and directory names to the casing of:
+* Area, controller, and action names.
+* Razor Pages.
+
+Matching case ensures the deployments find their views regardless of the underlying file system.
