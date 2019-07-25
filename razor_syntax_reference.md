@@ -557,3 +557,38 @@ There are three directives that pertain to Tag Helpers.
 | `@removeTagHelper` | Removes Tag Helpers previously added from a view.                                          |
 | `@tagHelperPrefix` | Specifies a tag prefix to enable Tag Helper support and to make Tag Helper usage explicit. |
 
+
+## **Razor reserved keywords**
+
+### **Razor keywords**
+* page (Requires ASP.NET Core 2.0 and later)
+* namespace
+* functions
+* inherits
+* model
+* section
+* helper (Not currently supported by ASP.NET Core)
+
+Razor keywords are escaped with @(Razor Keyword) (for example, `@(functions)`).
+
+### **C# Razor keywords**
+* case
+* do
+* default
+* for
+* foreach
+* if
+* else
+* lock
+* switch
+* try
+* catch
+* finally
+* using
+* while
+
+C# Razor keywords must be double-escaped with @(@C# Razor Keyword) (for example, `@(@case)`). The first @ escapes the Razor parser. The second @ escapes the C# parser.
+
+### **Reserved keywords not used by Razor**
+* class
+
