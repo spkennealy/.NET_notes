@@ -547,3 +547,13 @@ Rendered output:
 </ul>
 ```
 
+## **Tag Helpers**
+
+There are three directives that pertain to Tag Helpers.
+
+| **Directive**      | **Function**                                                                               |
+|--------------------|--------------------------------------------------------------------------------------------|
+| `@addTagHelper`    | Makes Tag Helpers available to a view.                                                     |
+| `@removeTagHelper` | Removes Tag Helpers previously added from a view.                                          |
+| `@tagHelperPrefix` | Specifies a tag prefix to enable Tag Helper support and to make Tag Helper usage explicit. |
+
