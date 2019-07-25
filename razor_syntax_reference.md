@@ -306,3 +306,141 @@ public class _Views_Something_cshtml : RazorPage<dynamic>
     }
 }
 ```
+
+### **@using**
+
+The @using directive adds the C# using directive to the generated view:
+```html
+<!-- .cshtml file --> 
+@using System.IO
+@{
+    var dir = Directory.GetCurrentDirectory();
+}
+<p>@dir</p>
+```
+
+### **@model**
+
+The @model directive specifies the type of the model passed to a view:
+```html
+<!-- .cshtml file --> 
+@model TypeNameOfModel
+```
+
+In an ASP.NET Core MVC app created with individual user accounts, the Views/Account/Login.cshtml view contains the following model declaration:
+```html
+<!-- .cshtml file --> 
+@model LoginViewModel
+```
+
+The class generated inherits from `RazorPage<dynamic>`:
+```csharp
+public class _Views_Account_Login_cshtml : RazorPage<LoginViewModel>
+```
+
+Razor exposes a Model property for accessing the model passed to the view:
+```html
+<!-- .cshtml file --> 
+<div>The Login Email: @Model.Email</div>
+```
+
+The `@model` directive specifies the type of this property. The directive specifies the `T` in `RazorPage<T>` that the generated class that the view derives from. If the `@model` directive isn't specified, the Model property is of type `dynamic`. The value of the model is passed from the controller to the view.
+
+### **@inherits**
+
+The @inherits directive provides full control of the class the view inherits:
+```html
+<!-- .cshtml file --> 
+@inherits TypeNameOfClassToInheritFrom
+```
+
+The following code is a custom Razor page type:
+```csharp
+using Microsoft.AspNetCore.Mvc.Razor;
+
+public abstract class CustomRazorPage<TModel> : RazorPage<TModel>
+{
+    public string CustomText { get; } = "Gardyloo! - A Scottish warning yelled from a window before dumping a slop bucket on the street below.";
+}
+```
+
+The CustomText is displayed in a view:
+```html
+<!-- .cshtml file --> 
+@inherits CustomRazorPage<TModel>
+
+<div>Custom text: @CustomText</div>
+```
+
+The code renders the following HTML:
+```html
+<div>Custom text: Gardyloo! - A Scottish warning yelled from a window before dumping a slop bucket on the street below.</div>
+```
+
+`@model` and `@inherits` can be used in the same view. `@inherits` can be in a `_ViewImports.cshtml` file that the view imports:
+
+The following code is an example of a strongly-typed view:
+```html
+<!-- .cshtml file --> 
+@inherits CustomRazorPage<TModel>
+
+<div>The Login Email: @Model.Email</div>
+<div>Custom text: @CustomText</div>
+```
+
+If "rick@contoso.com" is passed in the model, the view generates the following HTML markup:
+```html
+<div>The Login Email: rick@contoso.com</div>
+<div>Custom text: Gardyloo! - A Scottish warning yelled from a window before dumping a slop bucket on the street below.</div>
+```
+
+### **@inject**
+
+The `@inject` directive enables the Razor Page to inject a service from the service container into a view. 
+
+### **@functions**
+
+The @functions directive enables a Razor Page to add a C# code block to a view:
+```html
+<!-- .cshtml file --> 
+@functions { // C# Code }
+```
+
+For example:
+```html
+<!-- .cshtml file --> 
+@functions {
+    public string GetHello()
+    {
+        return "Hello";
+    }
+}
+
+<div>From method: @GetHello()</div> 
+```
+
+### **@attribute**
+
+The `@attribute` directive adds the given attribute to the class of the generated page or view. The following example adds the `[Authorize]` attribute:
+```html
+<!-- .cshtml file --> 
+@attribute [Authorize]
+```
+
+* In ASP.NET Core 3.0 Preview 6 release, there's a known issue where @attribute directives don't work in _Imports.razor and _ViewImports.cshtml files. This will be addressed in the Preview 7 release.
+
+### **@namespace**
+
+The @namespace directive sets the namespace of the class of the generated page or view:
+```html
+<!-- .cshtml file --> 
+@namespace Your.Namespace.Here
+```
+
+* If a page or view imports API with an @namespace directive, the original file's namespace is set relative to that namespace.
+* If multiple import files have the @namespace directive, the file closest to the page or view in the directory chain is used.
+
+### **@section**
+
+The @section directive is used in conjunction with the layout to enable pages or views to render content in different parts of the HTML page. 
+
