@@ -116,3 +116,15 @@ When writing your tests, try to only include one Assert per test. Common approac
 * Create a separate test for each assert.
 * Use parameterized tests.
 
+When introducing multiple asserts into a test case, it is not guaranteed that all of the asserts will be executed. In most unit testing frameworks, once an assertion fails in a unit test, the proceeding tests are automatically considered to be failing. This can be confusing as functionality that is actually working, will be shown as failing.
+
+A common exception to this rule is when asserting against an object. In this case, it is generally acceptable to have multiple asserts against each property to ensure the object is in the state that you expect it to be in.
+
+### **Validate private methods by unit testing public methods**
+
+In most cases, there should not be a need to test a private method. Private methods are an implementation detail. You can think of it this way: private methods never exist in isolation. At some point, there is going to be a public facing method that calls the private method as part of its implementation. What you should care about is the end result of the public method that calls into the private one.
+
+### **Stub static references**
+
+One of the principles of a unit test is that it must have full control of the system under test. This can be problematic when production code includes calls to static references (e.g. DateTime.Now). 
+
